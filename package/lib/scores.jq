@@ -1,0 +1,1 @@
+{url: .requestedUrl, scores: (.categories | to_entries | map({key: .key, value: (.value.score * 100 | floor)}) | from_entries)}

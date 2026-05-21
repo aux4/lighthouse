@@ -1,0 +1,5 @@
+*.zip
+*.report.html
+*.report.json
+*.report.csv
+.DS_Store

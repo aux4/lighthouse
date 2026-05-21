@@ -1,0 +1,1 @@
+.categories | to_entries[] | "  " + .key + ": " + (.value.score * 100 | floor | tostring)

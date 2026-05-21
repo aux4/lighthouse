@@ -1,0 +1,143 @@
+{
+  "scope": "aux4",
+  "name": "lighthouse",
+  "version": "1.0.0",
+  "description": "Run Google Lighthouse audits from the command line",
+  "license": "MIT",
+  "tags": [
+    "lighthouse",
+    "performance",
+    "accessibility",
+    "seo",
+    "audit",
+    "web"
+  ],
+  "system": [
+    [
+      "test:lighthouse --version",
+      "npm:lighthouse"
+    ]
+  ],
+  "profiles": [
+    {
+      "name": "main",
+      "commands": [
+        {
+          "name": "lighthouse",
+          "execute": [
+            "profile:lighthouse"
+          ],
+          "help": {
+            "text": "Google Lighthouse audit commands"
+          }
+        }
+      ]
+    },
+    {
+      "name": "lighthouse",
+      "commands": [
+        {
+          "name": "audit",
+          "execute": [
+            "set:presetFlag=!test ${preset} = desktop && echo --preset=desktop || echo ''",
+            "lighthouse value(url) --output json --chrome-flags='--headless --no-sandbox' ${presetFlag} 2>/dev/null > /tmp/.aux4-lighthouse.json || true",
+            "log:Lighthouse audit for value(url)",
+            "log:",
+            "jq -rf ${packageDir}/lib/audit.jq /tmp/.aux4-lighthouse.json",
+            "nout:rm -f /tmp/.aux4-lighthouse.json"
+          ],
+          "help": {
+            "text": "Run a Lighthouse audit and display scores",
+            "variables": [
+              {
+                "name": "url",
+                "text": "URL to audit",
+                "arg": true
+              },
+              {
+                "name": "preset",
+                "text": "Device preset",
+                "default": "mobile",
+                "options": [
+                  "mobile",
+                  "desktop"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "report",
+          "execute": [
+            "set:presetFlag=!test ${preset} = desktop && echo --preset=desktop || echo ''",
+            "set:formatFlag=!echo ${format} | tr ',' '\\n' | while read -r f; do printf ' --output=%s' \"$f\"; done",
+            "lighthouse value(url) ${formatFlag} --output-path=value(output) --chrome-flags='--headless --no-sandbox' ${presetFlag}"
+          ],
+          "help": {
+            "text": "Run a Lighthouse audit and save the report",
+            "variables": [
+              {
+                "name": "url",
+                "text": "URL to audit",
+                "arg": true
+              },
+              {
+                "name": "output",
+                "text": "Output file path (without extension)",
+                "default": "lighthouse-report"
+              },
+              {
+                "name": "format",
+                "text": "Report format (comma-separated: html, json, csv)",
+                "default": "html",
+                "options": [
+                  "html",
+                  "json",
+                  "csv",
+                  "html,json"
+                ]
+              },
+              {
+                "name": "preset",
+                "text": "Device preset",
+                "default": "mobile",
+                "options": [
+                  "mobile",
+                  "desktop"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "scores",
+          "execute": [
+            "set:presetFlag=!test ${preset} = desktop && echo --preset=desktop || echo ''",
+            "lighthouse value(url) --output json --chrome-flags='--headless --no-sandbox' ${presetFlag} 2>/dev/null > /tmp/.aux4-lighthouse.json || true",
+            "jq -f ${packageDir}/lib/scores.jq /tmp/.aux4-lighthouse.json",
+            "nout:rm -f /tmp/.aux4-lighthouse.json"
+          ],
+          "help": {
+            "text": "Run a quick audit and return scores as JSON",
+            "variables": [
+              {
+                "name": "url",
+                "text": "URL to audit",
+                "arg": true
+              },
+              {
+                "name": "preset",
+                "text": "Device preset",
+                "default": "mobile",
+                "options": [
+                  "mobile",
+                  "desktop"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
