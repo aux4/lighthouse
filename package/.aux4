@@ -16,6 +16,18 @@
     [
       "test:lighthouse --version",
       "npm:lighthouse"
+    ],
+    [
+      "test:google-chrome --version || chromium --version || chromium-browser --version",
+      "brew:google-chrome",
+      "apt:chromium-browser",
+      "dnf:chromium",
+      "apk:chromium"
+    ],
+    [
+      "test:jq --version",
+      "brew:jq",
+      "linux:jq"
     ]
   ],
   "profiles": [
