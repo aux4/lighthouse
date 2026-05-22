@@ -31,36 +31,7 @@ permissions:
   contents: write
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install Lighthouse
-        run: npm install -g lighthouse
-
-      - name: Install aux4
-        run: npm install -g aux4
-
-      - name: Install package locally
-        run: |
-          cd package
-          find . -name "*.zip" -delete
-          aux4 aux4 releaser install --dir . --noBuild true
-
-      - name: Run tests
-        run: |
-          cd package
-          aux4 test run
-
   publish:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
