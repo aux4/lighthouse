@@ -1,7 +1,7 @@
 {
   "scope": "aux4",
   "name": "lighthouse",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Run Google Lighthouse audits from the command line",
   "license": "MIT",
   "tags": [
