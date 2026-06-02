@@ -23,3 +23,19 @@ performance:
 ```expect:partial
 seo:
 ```
+
+## with category filter
+
+```timeout
+120000
+```
+
+### should only show the specified category
+
+```execute
+aux4 lighthouse audit https://example.com --category seo
+```
+
+```expect:partial
+seo:
+```

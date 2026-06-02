@@ -52,14 +52,15 @@
           "name": "audit",
           "execute": [
             "set:presetFlag=!test ${preset} = desktop && echo --preset=desktop || echo ''",
-            "lighthouse value(url) --output json --chrome-flags='--headless --no-sandbox' ${presetFlag} 2>/dev/null > /tmp/.aux4-lighthouse.json || true",
+            "set:categoryFlag=!test \"${category}\" != \"\" && echo \"--only-categories=${category}\" || echo ''",
+            "lighthouse value(url) --output json --chrome-flags='--headless --no-sandbox' ${presetFlag} ${categoryFlag} 2>/dev/null > /tmp/.aux4-lighthouse.json || true",
             "log:Lighthouse audit for value(url)",
             "log:",
             "jq -rf ${packageDir}/lib/audit.jq /tmp/.aux4-lighthouse.json",
             "nout:rm -f /tmp/.aux4-lighthouse.json"
           ],
           "help": {
-            "text": "Run a Lighthouse audit and display scores",
+            "text": "Run a Lighthouse audit and display scores with failing audits",
             "variables": [
               {
                 "name": "url",
@@ -74,6 +75,11 @@
                   "mobile",
                   "desktop"
                 ]
+              },
+              {
+                "name": "category",
+                "text": "Comma-separated categories to audit (e.g. performance,seo)",
+                "default": ""
               }
             ]
           }
@@ -82,8 +88,9 @@
           "name": "report",
           "execute": [
             "set:presetFlag=!test ${preset} = desktop && echo --preset=desktop || echo ''",
-            "set:formatFlag=!echo ${format} | tr ',' '\\n' | while read -r f; do printf ' --output=%s' \"$f\"; done",
-            "lighthouse value(url) ${formatFlag} --output-path=value(output) --chrome-flags='--headless --no-sandbox' ${presetFlag}"
+            "set:categoryFlag=!test \"${category}\" != \"\" && echo \"--only-categories=${category}\" || echo ''",
+            "set:formatFlag=!for f in $(echo ${format} | tr ',' ' '); do printf ' --output=%s' $f; done",
+            "lighthouse value(url) ${formatFlag} --output-path=value(output) --chrome-flags='--headless --no-sandbox' ${presetFlag} ${categoryFlag}"
           ],
           "help": {
             "text": "Run a Lighthouse audit and save the report",
@@ -117,6 +124,11 @@
                   "mobile",
                   "desktop"
                 ]
+              },
+              {
+                "name": "category",
+                "text": "Comma-separated categories to audit (e.g. performance,seo)",
+                "default": ""
               }
             ]
           }
@@ -125,8 +137,10 @@
           "name": "scores",
           "execute": [
             "set:presetFlag=!test ${preset} = desktop && echo --preset=desktop || echo ''",
-            "lighthouse value(url) --output json --chrome-flags='--headless --no-sandbox' ${presetFlag} 2>/dev/null > /tmp/.aux4-lighthouse.json || true",
-            "jq -f ${packageDir}/lib/scores.jq /tmp/.aux4-lighthouse.json",
+            "set:categoryFlag=!test \"${category}\" != \"\" && echo \"--only-categories=${category}\" || echo ''",
+            "set:jqFilter=!test ${details} = true && echo scores-details.jq || echo scores.jq",
+            "lighthouse value(url) --output json --chrome-flags='--headless --no-sandbox' ${presetFlag} ${categoryFlag} 2>/dev/null > /tmp/.aux4-lighthouse.json || true",
+            "jq -f ${packageDir}/lib/${jqFilter} /tmp/.aux4-lighthouse.json",
             "nout:rm -f /tmp/.aux4-lighthouse.json"
           ],
           "help": {
@@ -144,6 +158,20 @@
                 "options": [
                   "mobile",
                   "desktop"
+                ]
+              },
+              {
+                "name": "category",
+                "text": "Comma-separated categories to audit (e.g. performance,seo)",
+                "default": ""
+              },
+              {
+                "name": "details",
+                "text": "Include failing audits in output",
+                "default": "false",
+                "options": [
+                  "true",
+                  "false"
                 ]
               }
             ]

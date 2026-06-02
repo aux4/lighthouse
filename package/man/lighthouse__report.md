@@ -4,17 +4,19 @@ The `report` command runs a Lighthouse audit and saves the results to a file. Su
 
 The HTML report is a self-contained interactive page with detailed audit results, screenshots, and recommendations. The JSON report contains the full raw data for programmatic processing.
 
+Use `--category` to run only specific categories for faster results.
+
 #### Usage
 
 ```bash
-aux4 lighthouse report <url> [--output <path>] [--format <formats>] [--preset <mobile|desktop>] [--categories <list>]
+aux4 lighthouse report <url> [--output <path>] [--format <formats>] [--preset <mobile|desktop>] [--category <list>]
 ```
 
-url           URL to audit
---output      Output file path without extension (default: lighthouse-report)
---format      Report format: html (default), json, csv, or html,json for both
---preset      Device preset: mobile (default) or desktop
---categories  Comma-separated categories to audit
+url          URL to audit
+--output     Output file path without extension (default: lighthouse-report)
+--format     Report format: html (default), json, csv, or html,json for both
+--preset     Device preset: mobile (default) or desktop
+--category   Comma-separated categories to audit
 
 #### Example
 
@@ -31,5 +33,5 @@ aux4 lighthouse report https://example.com --format html,json --output ./reports
 Generates `./reports/my-site.report.html` and `./reports/my-site.report.json`.
 
 ```bash
-aux4 lighthouse report https://example.com --format json --preset desktop
+aux4 lighthouse report https://example.com --format json --preset desktop --category performance,seo
 ```
