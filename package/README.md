@@ -10,16 +10,6 @@ This package wraps the [Lighthouse](https://developer.chrome.com/docs/lighthouse
 aux4 aux4 pkger install aux4/lighthouse
 ```
 
-## System Dependencies
-
-This package requires Lighthouse CLI. It will be installed automatically via npm:
-
-```bash
-npm install -g lighthouse
-```
-
-Lighthouse also requires a Chrome/Chromium browser. It uses the system Chrome by default. If Chrome is not installed, set the `CHROME_PATH` environment variable to a Chromium binary (e.g. from Playwright).
-
 ## Quick Start
 
 Run a full audit with diagnostics:
@@ -174,10 +164,6 @@ if [ "$PERF" -lt 80 ]; then
   exit 1
 fi
 ```
-
-## Environment Variables
-
-- `CHROME_PATH` — Path to Chrome/Chromium binary (overrides auto-detection)
 
 ## License
 
